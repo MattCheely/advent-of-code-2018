@@ -1,22 +1,20 @@
 module Main exposing (main)
 
-import Browser exposing (sandbox)
-import Html exposing (Html, button, div, text)
-import Html.Attributes exposing (class, id)
-import Html.Events exposing (onClick)
+import Browser
+import Day1
+import Html exposing (Html, div, text)
+import Html.Attributes exposing (id)
+import Http exposing (get)
+import RemoteData exposing (WebData)
 
 
-{-| This creates the most basic sort of Elm progam available in the
-browser. No side effects like HTTP requests are available, just user
-input and view rendering. For more options, see the elm/browser package
-documentation @ <https://package.elm-lang.org/packages/elm/browser/latest/>
--}
 main : Program () Model Msg
 main =
-    Browser.sandbox
-        { init = initalModel
+    Browser.element
+        { init = init
         , update = update
         , view = view
+        , subscriptions = \_ -> Sub.none
         }
 
 
@@ -25,14 +23,29 @@ main =
 
 
 type alias Model =
-    { count : Int
-    }
+    WebData (List Int)
 
 
-initalModel : Model
-initalModel =
-    { count = 0
-    }
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( RemoteData.Loading
+    , get
+        { url = "/day1.txt"
+        , expect = Http.expectString parseInput
+        }
+    )
+
+
+parseInput : Result Http.Error String -> Msg
+parseInput response =
+    case response of
+        Ok text ->
+            String.split "\n" text
+                |> List.filterMap String.toInt
+                |> GotInput
+
+        Err err ->
+            LookupFailed err
 
 
 
@@ -40,31 +53,44 @@ initalModel =
 
 
 type Msg
-    = AddOne
-    | SubtractOne
+    = GotInput (List Int)
+    | LookupFailed Http.Error
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        AddOne ->
-            { model | count = model.count + 1 }
+        GotInput input ->
+            ( RemoteData.Success input, Cmd.none )
 
-        SubtractOne ->
-            { model | count = model.count - 1 }
+        LookupFailed err ->
+            ( RemoteData.Failure err, Cmd.none )
 
 
 
 -- View
 
 
-view : Model -> Html Msg
 view model =
-    div [ id "counter-app" ]
-        [ div [ class "counter" ]
-            [ text (String.fromInt model.count) ]
-        , div [ class "controls" ]
-            [ button [ onClick AddOne ] [ text "+1" ]
-            , button [ onClick SubtractOne ] [ text "-1" ]
-            ]
-        ]
+    dayView model Day1.part1 Day1.part2
+
+
+dayView model partOne partTwo =
+    div [ id "day-1" ]
+        (case model of
+            RemoteData.Success input ->
+                [ div [ id "part-one" ]
+                    [ text ("Part One: " ++ partOne input)
+                    ]
+                , div
+                    [ id "part-two" ]
+                    [ text ("Part Two: " ++ partTwo input)
+                    ]
+                ]
+
+            RemoteData.Failure err ->
+                [ text "Failed to fetch input." ]
+
+            _ ->
+                [ text "..." ]
+        )
