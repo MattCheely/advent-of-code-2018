@@ -1,0 +1,342 @@
+@import url("https://fonts.googleapis.com/css?family=Inconsolata");
+
+* {
+  border: none;
+  box-sizing: border-box;
+  font-family: "Inconsolata", monospace;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.4rem;
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin-left: 1ch;
+  padding-bottom: 1.4rem;
+}
+p {
+  margin: 0 0 1rem 0;
+}
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+  margin: 1rem 0 1rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+h1::before,
+.h1::before,
+h2::before,
+.h2::before,
+h3::before,
+.h3::before,
+h4::before,
+.h4::before,
+h5::before,
+.h5::before,
+h6::before,
+.h6::before {
+  content: "// ";
+}
+h1::after {
+  content: " -------------------------------------------------------------------------------------------------------------";
+}
+a {
+  color: #ec007c;
+  text-decoration: none;
+}
+a:hover,
+a:hover > * {
+  background-color: #0096c1;
+  color: #00303e;
+}
+a.btn,
+a.btn:hover,
+button {
+  background: none;
+  border: none;
+  color: #ae81ff;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+a.btn.secondary,
+button.secondary {
+  color: #66d9ef;
+}
+a.btn.tertiary,
+button.tertiary {
+  color: #fd971f;
+}
+a.btn,
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+a.btn::before,
+button::before {
+  content: "[";
+}
+a.btn::after,
+button::after {
+  content: "]";
+}
+a[disabled],
+a[disabled]:hover,
+button[disabled],
+button[disabled]:hover {
+  background: none;
+  color: #999;
+  cursor: default;
+  pointer-events: none;
+}
+label::after {
+  content: " > ";
+}
+.input-group {
+  margin-bottom: 0.38rem;
+}
+.input-group > * {
+  vertical-align: middle;
+}
+.input-group > label + textarea {
+  vertical-align: top;
+}
+input[type="text"],
+input[type="password"],
+textarea {
+  background: none;
+  border: none;
+  border-bottom: 1px solid;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  opacity: 0;
+}
+input[type="checkbox"] + span,
+input[type="radio"] + span {
+  vertical-align: middle;
+  margin-left: -2ch;
+  width: 0;
+  z-index: -1;
+}
+input[type="checkbox"] + span::before {
+  content: "[ ]";
+}
+input[type="checkbox"]:checked + span::before {
+  content: "[X]";
+}
+input[type="radio"] + span::before {
+  content: "( )";
+}
+input[type="radio"]:checked + span::before {
+  content: "(*)";
+}
+select {
+  background: none;
+  text-align: left;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+select.alternate {
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-radius: 6px;
+}
+fieldset > .input-group {
+  padding-left: 1ch;
+}
+@counter-style pad {
+  system: numeric;
+  symbols: "0" "1" "2" "3" "4" "5" "6" "7" "8" "9";
+  pad: 2 "0";
+  suffix: ": ";
+}
+@counter-style hex-pad {
+  system: numeric;
+  symbols: "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "a" "b" "c" "d" "e" "f";
+  pad: 2 "0";
+  suffix: ": ";
+}
+ol {
+  list-style-type: decimal-leading-zero;
+  list-style-type: pad;
+}
+ol.hex {
+  list-style-type: hex-pad;
+}
+ul {
+  list-style-type: none;
+}
+ul > li::before {
+  content: "- ";
+}
+ol,
+ul {
+  list-style-position: inside;
+}
+th {
+  font-style: italic;
+}
+th,
+td {
+  padding-right: 3ch;
+  text-align: left;
+}
+.forty-col {
+  width: 40ch;
+}
+.sixty-col {
+  width: 60ch;
+}
+.eighty-col {
+  width: 80ch;
+}
+.hundred-col {
+  width: 100ch;
+}
+.onetwenty-col {
+  width: 120ch;
+}
+.onetwenty-col > .cols-2 > * {
+  width: 57ch;
+}
+.onetwenty-col > .cols-3 > * {
+  width: 36ch;
+}
+.hundred-col > .cols-2 > * {
+  width: 47ch;
+}
+.hundred-col > .cols-3 > * {
+  width: 29ch;
+}
+.eighty-col > .cols-2 > * {
+  width: 37ch;
+}
+.eighty-col > .cols-3 > * {
+  width: 80ch;
+}
+.sixty-col > .cols-2 > * {
+  width: 60ch;
+}
+.sixty-col > .cols-3 > * {
+  width: 60ch;
+}
+.forty-col > .cols-2 > * {
+  width: 40ch;
+}
+.forty-col > .cols-3 > * {
+  width: 40ch;
+}
+.cols-2 > * {
+  width: calc(46%);
+}
+.cols-3 > * {
+  width: calc(28%);
+}
+.cols-2 > *,
+.cols-3 > * {
+  float: left;
+  margin-right: 6ch;
+  min-width: 29ch;
+}
+.cols-2 > *:last-child,
+.cols-3 > *:last-child {
+  margin-right: 0;
+}
+.cols-2::after,
+.cols-3::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.status-line {
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  margin-bottom: 0;
+  padding-left: 1ch;
+  min-height: 1.4rem;
+}
+.with-status-line {
+  margin-bottom: 1.4rem;
+}
+body {
+  background: #00303e;
+  color: #f8f8f2;
+}
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+  color: #999;
+}
+input[type="text"],
+input[type="password"],
+textarea {
+  border-bottom: 1px solid;
+  color: #efe158;
+}
+input[type="checkbox"] + span,
+input[type="radio"] + span {
+  color: #efe158;
+}
+select {
+  color: #efe158;
+}
+option {
+  background: #00303e;
+}
+a {
+  color: #ec007c;
+}
+a:hover,
+a:hover > * {
+  background-color: #ec007c;
+  color: #00303e;
+}
+a.btn,
+a.btn:hover,
+button {
+  color: #ae81ff;
+}
+a.btn.secondary,
+button.secondary {
+  color: #66d9ef;
+}
+a.btn.tertiary,
+button.tertiary {
+  color: #fd971f;
+}
+a[disabled],
+a[disabled]:hover,
+button[disabled],
+button[disabled]:hover {
+  color: #999;
+}
+th {
+  color: #66d9ef;
+}
+.status-line {
+  background: #00303e;
+  border-top: 1px solid #999;
+}
