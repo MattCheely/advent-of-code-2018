@@ -7,6 +7,7 @@ import Data.Day1 as Day1
 import Data.Day2 as Day2
 import Day1
 import Day2
+import Day3
 import Html exposing (Html, a, button, code, div, h1, h2, nav, p, pre, span, text)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
@@ -35,6 +36,14 @@ solve dayNum dayPart =
                 Two ->
                     Day2.partTwo Day2.boxIds
 
+        3 ->
+            case dayPart of
+                One ->
+                    Day3.part1 Day3.claims |> String.fromInt
+
+                Two ->
+                    Day3.part2 Day3.claims |> String.fromInt
+
         _ ->
             "lowut"
 
@@ -46,6 +55,7 @@ solve dayNum dayPart =
 solutions =
     Array.fromList
         [ emptySolution
+        , emptySolution
         , emptySolution
         ]
 
@@ -307,7 +317,7 @@ view model =
 navView : Html Msg
 navView =
     nav []
-        (List.range 1 2
+        (List.range 1 (Array.length solutions)
             |> List.map (String.fromInt >> dayLink)
             |> List.intersperse (span [ class "nav-divider" ] [])
         )
