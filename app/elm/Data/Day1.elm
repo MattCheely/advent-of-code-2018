@@ -1,7 +1,13 @@
-module Data.Day1 exposing (input)
+module Data.Day1 exposing (input, inputStr)
 
 
 input =
+    inputStr
+        |> String.split "\n"
+        |> List.filterMap String.toInt
+
+
+inputStr =
     """
 -10
 +6
@@ -955,5 +961,3 @@ input =
 +18
 -76214
 """
-        |> String.split "\n"
-        |> List.filterMap String.toInt

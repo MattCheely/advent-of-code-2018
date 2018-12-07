@@ -3,10 +3,18 @@ module Day1 exposing (part1, part2)
 import Set exposing (Set)
 
 
+
+-- Part One
+
+
 part1 : List Int -> String
 part1 changes =
     List.foldl (+) 0 changes
         |> String.fromInt
+
+
+
+-- Part Two
 
 
 part2 : List Int -> String

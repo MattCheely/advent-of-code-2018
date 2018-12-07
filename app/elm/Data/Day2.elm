@@ -1,7 +1,12 @@
-module Data.Day2 exposing (boxIds)
+module Data.Day2 exposing (boxIds, inputStr)
 
 
 boxIds =
+    inputStr
+        |> String.split "\n"
+
+
+inputStr =
     """ivyhczwokexltwhsfamqprbnuy
 ivjhcjdokexltwwsfamqpabnuy
 ivjhczdokebltwgsfydqprbnuy
@@ -253,4 +258,3 @@ xqjxczdokexltwgsfamqprbnuy
 ivjhczdokeyltwgsfamqnrbnuw
 ivjwczgokexltwgsfamvprbnuy
 """
-        |> String.split "\n"

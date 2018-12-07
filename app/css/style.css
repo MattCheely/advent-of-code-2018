@@ -1,12 +1,8 @@
-#counter-app {
-  font-family: "sans-serif";
-  text-align: center;
+nav {
+  margin-bottom: 1rem;
 }
 
-.counter {
-  font-size: 3rem;
-}
-
-.controls button {
-  margin: 5px;
+.nav-divider::after {
+  content: " | ";
+  color: #ec007c;
 }
