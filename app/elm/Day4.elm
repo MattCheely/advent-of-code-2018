@@ -24,6 +24,12 @@ import Parser.Extras exposing (many, some)
 -- Section: Input Parsing
 
 
+type alias Shift =
+    { guard : Int
+    , naps : List ( Int, Int )
+    }
+
+
 parsedShifts : List Shift
 parsedShifts =
     String.lines inputStr
@@ -35,12 +41,37 @@ parsedShifts =
         |> Result.withDefault []
 
 
-reverseTimestamp : String -> String
-reverseTimestamp entry =
-    String.split "] " entry
-        |> List.reverse
-        |> String.join " "
-        |> (\str -> str ++ "]")
+shiftParser : Parser Shift
+shiftParser =
+    succeed Shift
+        |= guardParser
+        |. spaces
+        |= many napParser
+
+
+guardParser : Parser Int
+guardParser =
+    succeed identity
+        |. keyword "Guard"
+        |. spaces
+        |. symbol "#"
+        |= int
+        |. spaces
+        |. keyword "begins shift"
+        |. spaces
+        |. minuteParser
+
+
+napParser : Parser ( Int, Int )
+napParser =
+    succeed Tuple.pair
+        |. keyword "falls asleep"
+        |. spaces
+        |= minuteParser
+        |. spaces
+        |. keyword "wakes up"
+        |. spaces
+        |= minuteParser
 
 
 minuteParser : Parser Int
@@ -69,43 +100,12 @@ paddedInt =
         ]
 
 
-guardParser : Parser Int
-guardParser =
-    succeed identity
-        |. keyword "Guard"
-        |. spaces
-        |. symbol "#"
-        |= int
-        |. spaces
-        |. keyword "begins shift"
-        |. spaces
-        |. minuteParser
-
-
-napParser : Parser ( Int, Int )
-napParser =
-    succeed Tuple.pair
-        |. keyword "falls asleep"
-        |. spaces
-        |= minuteParser
-        |. spaces
-        |. keyword "wakes up"
-        |. spaces
-        |= minuteParser
-
-
-type alias Shift =
-    { guard : Int
-    , naps : List ( Int, Int )
-    }
-
-
-shiftParser : Parser Shift
-shiftParser =
-    succeed Shift
-        |= guardParser
-        |. spaces
-        |= many napParser
+reverseTimestamp : String -> String
+reverseTimestamp entry =
+    String.split "] " entry
+        |> List.reverse
+        |> String.join " "
+        |> (\str -> str ++ "]")
 
 
 
