@@ -7,7 +7,7 @@ import Set exposing (Set)
 
 
 
--- Input Parsing
+-- Section: Input Parsing
 
 
 type alias Claim =
@@ -58,7 +58,7 @@ claims =
 
 
 
--- Part One: 109143
+-- Section: Part One -> 109143
 
 
 part1 : List Claim -> Int
@@ -203,7 +203,7 @@ markOverlaps { top, bottom, left, right } fabric =
 
 
 
--- Part Two
+-- Section: Part Two
 
 
 part2 : List Claim -> Int

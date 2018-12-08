@@ -3,7 +3,6 @@ module Main exposing (main)
 import Array exposing (Array)
 import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Navigation
-import Data.Day1 as Day1
 import Data.Day2 as Day2
 import Day1
 import Day2
@@ -18,86 +17,65 @@ import Url exposing (Url)
 import Url.Parser as Url exposing ((</>), int, s)
 
 
+solvers : Array (Array (() -> String))
+solvers =
+    [ [ \_ -> Day1.part1 Day1.freqChanges
+      , \_ -> Day1.part2 Day1.freqChanges
+      ]
+    , [ \_ -> Day2.partOne Day2.boxIds |> String.fromInt
+      , \_ -> Day2.partTwo Day2.boxIds
+      ]
+    , [ \_ -> Day3.part1 Day3.claims |> String.fromInt
+      , \_ -> Day3.part2 Day3.claims |> String.fromInt
+      ]
+    , [ \_ -> Day4.part1 Day4.parsedShifts |> String.fromInt
+      , \_ -> Day4.part2 Day4.parsedShifts |> String.fromInt
+      ]
+    ]
+        |> List.map Array.fromList
+        |> Array.fromList
+
+
 solve : Int -> DayPart -> String
 solve dayNum dayPart =
-    case dayNum of
-        1 ->
+    let
+        partIdx =
             case dayPart of
                 One ->
-                    Day1.part1 Day1.input
+                    0
 
                 Two ->
-                    Day1.part2 Day1.input
+                    1
 
-        2 ->
-            case dayPart of
-                One ->
-                    Day2.partOne Day2.boxIds |> String.fromInt
-
-                Two ->
-                    Day2.partTwo Day2.boxIds
-
-        3 ->
-            case dayPart of
-                One ->
-                    Day3.part1 Day3.claims |> String.fromInt
-
-                Two ->
-                    Day3.part2 Day3.claims |> String.fromInt
-
-        4 ->
-            case dayPart of
-                One ->
-                    Day4.part1 Day4.parsedShifts |> String.fromInt
-
-                Two ->
-                    Day4.part2 Day4.parsedShifts |> String.fromInt
-
-        _ ->
-            "lowut"
+        solver =
+            Array.get (dayNum - 1) solvers
+                |> Maybe.andThen (Array.get partIdx)
+                |> Maybe.withDefault (always "Not solved")
+    in
+    solver ()
 
 
 
 -- Model
 
 
-solutions =
-    Array.fromList
-        [ emptySolution
-        , emptySolution
-        , emptySolution
-        , emptySolution
-        ]
-
-
-emptySolution =
-    { part1 =
-        { code = ""
-        , solution = Nothing
-        }
-    , part2 =
-        { code = ""
-        , solution = Nothing
-        }
-    }
-
-
-type alias Solution =
-    { part1 :
-        { code : String
-        , solution : Maybe String
-        }
-    , part2 :
-        { code : String
-        , solution : Maybe String
-        }
-    }
-
-
 type alias Model =
     { key : Navigation.Key
     , route : Route
     , days : Array Solution
+    }
+
+
+type alias Solution =
+    { part1 : Part
+    , part2 : Part
+    , parseCode : String
+    }
+
+
+type alias Part =
+    { code : String
+    , solution : Maybe String
     }
 
 
@@ -110,9 +88,22 @@ init _ url key =
     handleRoute
         { key = key
         , route = Intro
-        , days = solutions
+        , days = Array.repeat (Array.length solvers) emptySolution
         }
         route
+
+
+emptySolution =
+    let
+        emptyPart =
+            { code = ""
+            , solution = Nothing
+            }
+    in
+    { part1 = emptyPart
+    , part2 = emptyPart
+    , parseCode = ""
+    }
 
 
 type DayPart
@@ -234,32 +225,44 @@ setSolutionCode code solution =
             solution.part2
 
         codeParts =
-            String.split "-- Part" code
+            String.split "-- Section:" code
                 |> List.drop 1
-                |> List.take 2
+                |> List.take 3
+                |> Array.fromList
+
+        inputParsing =
+            Array.get 0 codeParts
+                |> Maybe.map cleanCodeSample
+                |> Maybe.withDefault "No code found"
 
         newPart1 =
             { part1
                 | code =
-                    List.head codeParts
-                        |> Maybe.map String.lines
-                        |> Maybe.map (List.drop 3)
-                        |> Maybe.map (String.join "\n")
+                    Array.get 1 codeParts
+                        |> Maybe.map cleanCodeSample
                         |> Maybe.withDefault "No Solution"
             }
 
         newPart2 =
             { part1
                 | code =
-                    List.tail codeParts
-                        |> Maybe.andThen List.head
-                        |> Maybe.map String.lines
-                        |> Maybe.map (List.drop 3)
-                        |> Maybe.map (String.join "\n")
+                    Array.get 2 codeParts
+                        |> Maybe.map cleanCodeSample
                         |> Maybe.withDefault "No Solution"
             }
     in
-    { solution | part1 = newPart1, part2 = newPart2 }
+    { solution
+        | parseCode = inputParsing
+        , part1 = newPart1
+        , part2 = newPart2
+    }
+
+
+cleanCodeSample : String -> String
+cleanCodeSample code =
+    String.lines code
+        |> List.drop 3
+        |> String.join "\n"
 
 
 setSolution : Model -> Int -> DayPart -> String -> Model
@@ -320,28 +323,57 @@ view model =
                     ( "Day " ++ String.fromInt day, dayView day model.days )
     in
     { title = title
-    , body = [ navView, content ]
+    , body = [ navView model.days, content ]
     }
 
 
-navView : Html Msg
-navView =
-    nav []
-        (List.range 1 (Array.length solutions)
-            |> List.map (String.fromInt >> dayLink)
+navView : Array Solution -> Html Msg
+navView days =
+    nav [ class "main-nav" ]
+        (navLink "Home" "#"
+            :: (List.range 1 (Array.length days)
+                    |> List.map dayLink
+               )
             |> List.intersperse (span [ class "nav-divider" ] [])
         )
 
 
-dayLink : String -> Html Msg
+dayLink : Int -> Html Msg
 dayLink day =
-    a [ class "navLink", href ("#/day/" ++ day) ]
-        [ text ("Day " ++ day) ]
+    let
+        dayStr =
+            String.fromInt day
+    in
+    navLink ("Day " ++ dayStr) ("#/day/" ++ dayStr)
+
+
+navLink : String -> String -> Html Msg
+navLink content location =
+    a [ class "navLink", href location ]
+        [ text content ]
 
 
 introView : Html Msg
 introView =
-    p [] [ text "Choose a day to see the solutions" ]
+    div [ class "eighty-col" ]
+        [ p []
+            [ text "These are my solutions for the "
+            , a [ href "https://adventofcode.com/2018" ] [ text "2018 Advent of Code" ]
+            , text """
+        in Elm. I've had fun working on them. They've been good exercise
+        for some of the things I do less often in Elm, like writing
+        recursive funtions and parsers. """
+            ]
+        , p [] [ text """
+        If you're here trying to evaluate Elm as a language, I want to
+        note that these sorts of problems don't play to Elm's
+        biggest strenghts, IMHO.  It's not that Elm is worse for handling
+        these problems than other languages. It's fine in that regard.
+        However, Elm really shines when
+        dealing with things like managing changing application state and
+        handling unreliable input, none of which are present here.
+        """ ]
+        ]
 
 
 dayView : Int -> Array Solution -> Html Msg
@@ -354,6 +386,7 @@ dayView dayNum days =
                 , codeView day.part1.code
                 , partHeader Two dayNum day
                 , codeView day.part2.code
+                , parsingView day.parseCode
                 ]
 
         Nothing ->
@@ -394,6 +427,14 @@ codeView codeStr =
         , Highlight.elm codeStr
             |> Result.map (Highlight.toBlockHtml Nothing)
             |> Result.withDefault (code [] [ text codeStr ])
+        ]
+
+
+parsingView : String -> Html Msg
+parsingView code =
+    div []
+        [ h2 [] [ text "Input Parsing" ]
+        , codeView code
         ]
 
 

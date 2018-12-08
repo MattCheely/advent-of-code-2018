@@ -1,9 +1,4 @@
-module Data.Day2 exposing (boxIds, inputStr)
-
-
-boxIds =
-    inputStr
-        |> String.split "\n"
+module Data.Day2 exposing (inputStr)
 
 
 inputStr =

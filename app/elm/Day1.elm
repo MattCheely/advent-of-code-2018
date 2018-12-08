@@ -1,10 +1,22 @@
-module Day1 exposing (part1, part2)
+module Day1 exposing (freqChanges, part1, part2)
 
+import Data.Day1 exposing (inputStr)
 import Set exposing (Set)
 
 
 
--- Part One
+-- Section: Input Parsing
+
+
+freqChanges : List Int
+freqChanges =
+    inputStr
+        |> String.split "\n"
+        |> List.filterMap String.toInt
+
+
+
+-- Section: Part One
 
 
 part1 : List Int -> String
@@ -14,7 +26,7 @@ part1 changes =
 
 
 
--- Part Two
+-- Section: Part Two
 
 
 part2 : List Int -> String

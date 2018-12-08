@@ -21,7 +21,7 @@ import Parser.Extras exposing (many, some)
 
 
 
--- Input Parsing
+-- Section: Input Parsing
 
 
 parsedShifts : List Shift
@@ -109,7 +109,7 @@ shiftParser =
 
 
 
--- Part One : 151754
+-- Section: Part One : 151754
 
 
 type alias GuardStats =
@@ -122,8 +122,7 @@ getSleepiestMinute : GuardStats -> ( Int, Int )
 getSleepiestMinute guardStats =
     guardStats.frequencyAsleep
         |> Array.toIndexedList
-        |> List.sortBy Tuple.second
-        |> List.reverse
+        |> List.sortBy (Tuple.second >> negate)
         |> List.head
         |> Maybe.withDefault ( 99, 0 )
 
@@ -200,7 +199,7 @@ emptyGuardStats =
 
 
 
--- Part Two : 19896
+-- Section: Part Two : 19896
 
 
 part2 : List Shift -> Int
@@ -214,8 +213,7 @@ part2 shifts =
             List.map
                 (\( guard, stats ) -> ( guard, getSleepiestMinute stats ))
                 allGuardStats
-                |> List.sortBy (Tuple.second >> Tuple.second)
-                |> List.reverse
+                |> List.sortBy (Tuple.second >> Tuple.second >> negate)
                 |> List.head
                 |> Maybe.withDefault ( 0, ( 99, 0 ) )
     in

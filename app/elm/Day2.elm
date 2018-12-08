@@ -1,10 +1,21 @@
-module Day2 exposing (partOne, partTwo)
+module Day2 exposing (boxIds, partOne, partTwo)
 
+import Data.Day2 exposing (inputStr)
 import Dict exposing (Dict)
 
 
 
--- Part 1
+-- Section: Input Parsing
+
+
+boxIds : List String
+boxIds =
+    inputStr
+        |> String.split "\n"
+
+
+
+-- Section: Part 1
 
 
 type BoxCategory
@@ -15,16 +26,16 @@ type BoxCategory
 
 
 partOne : List String -> Int
-partOne boxIds =
+partOne boxes =
     let
         ( twos, threes ) =
-            categoryCounts boxIds
+            categoryCounts boxes
     in
     twos * threes
 
 
 categoryCounts : List String -> ( Int, Int )
-categoryCounts boxIds =
+categoryCounts boxes =
     List.foldl
         (\boxId ( twos, threes ) ->
             case categorizeBox boxId of
@@ -41,7 +52,7 @@ categoryCounts boxIds =
                     ( twos, threes )
         )
         ( 0, 0 )
-        boxIds
+        boxes
 
 
 categorizeBox : String -> BoxCategory
@@ -84,12 +95,12 @@ countChar char counts =
 
 
 
--- Part 2
+-- Section: Part 2
 
 
 partTwo : List String -> String
-partTwo boxIds =
-    case boxIds of
+partTwo boxes =
+    case boxes of
         first :: rest ->
             case checkBoxAgainstOthers first rest of
                 Just characters ->

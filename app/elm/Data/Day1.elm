@@ -1,10 +1,4 @@
-module Data.Day1 exposing (input, inputStr)
-
-
-input =
-    inputStr
-        |> String.split "\n"
-        |> List.filterMap String.toInt
+module Data.Day1 exposing (inputStr)
 
 
 inputStr =
