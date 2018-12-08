@@ -33,6 +33,7 @@ solvers =
       , \_ -> Day4.part2 Day4.parsedShifts |> String.fromInt
       ]
     , [ \_ -> Day5.part1 Day5.polymerStr |> String.fromInt
+      , \_ -> Day5.part2 Day5.polymerStr |> String.fromInt
       ]
     ]
         |> List.map Array.fromList
