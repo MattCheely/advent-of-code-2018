@@ -74,19 +74,10 @@ type alias Fabric =
     Array (Array Int)
 
 
+emptyFabric : Fabric
 emptyFabric =
-    let
-        kCells =
-            List.range 0 1000
-
-        emptyRow =
-            kCells
-                |> List.map (always 0)
-                |> Array.fromList
-    in
-    kCells
-        |> List.map (always emptyRow)
-        |> Array.fromList
+    Array.repeat 1000 0
+        |> Array.repeat 1000
 
 
 markCell : Int -> Int -> Fabric -> Fabric
