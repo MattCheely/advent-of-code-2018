@@ -1,4 +1,4 @@
-module Day6 exposing (coordinates, part1)
+module Day6 exposing (coordinates, part1, part2)
 
 import Data.Day6 exposing (inputStr)
 import Dict exposing (Dict)
@@ -62,12 +62,6 @@ part1 coords =
 getAreas : List ( Int, Int ) -> Grid -> Dict ( Int, Int ) Int
 getAreas coords bounds =
     let
-        xs =
-            List.range bounds.xMin bounds.xMax
-
-        ys =
-            List.range bounds.yMin bounds.yMax
-
         emptyAreas =
             List.map (\coord -> ( coord, 0 )) coords
                 |> Dict.fromList
@@ -88,8 +82,7 @@ getAreas coords bounds =
                     areas
         )
         emptyAreas
-        xs
-        ys
+        bounds
 
 
 inInfiniteRegion : Grid -> ( Int, Int ) -> Bool
@@ -154,8 +147,15 @@ findBoundaries coords =
         coords
 
 
-foldxy : (a -> b -> c -> c) -> c -> List a -> List b -> c
-foldxy fun acc xs ys =
+foldxy : (Int -> Int -> c -> c) -> c -> Grid -> c
+foldxy fun acc bounds =
+    let
+        xs =
+            List.range bounds.xMin bounds.xMax
+
+        ys =
+            List.range bounds.yMin bounds.yMax
+    in
     List.foldl
         (\x accOuter ->
             List.foldl
@@ -167,3 +167,30 @@ foldxy fun acc xs ys =
         )
         acc
         xs
+
+
+
+-- Section: Part Two
+
+
+part2 : List ( Int, Int ) -> Int
+part2 coords =
+    let
+        gridBoundaries =
+            findBoundaries coords
+    in
+    foldxy
+        (\x y area ->
+            let
+                totalDistance =
+                    List.map (manhattanDistance ( x, y )) coords
+                        |> List.sum
+            in
+            if totalDistance < 10000 then
+                area + 1
+
+            else
+                area
+        )
+        0
+        gridBoundaries

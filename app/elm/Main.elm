@@ -37,6 +37,7 @@ solvers =
       , \_ -> Day5.part2 Day5.polymerStr |> String.fromInt
       ]
     , [ \_ -> Day6.part1 Day6.coordinates |> String.fromInt
+      , \_ -> Day6.part2 Day6.coordinates |> String.fromInt
       ]
     ]
         |> List.map Array.fromList
