@@ -9,6 +9,7 @@ import Day2
 import Day3
 import Day4
 import Day5
+import Day6
 import Html exposing (Html, a, button, code, div, h1, h2, nav, p, pre, span, text)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
@@ -34,6 +35,8 @@ solvers =
       ]
     , [ \_ -> Day5.part1 Day5.polymerStr |> String.fromInt
       , \_ -> Day5.part2 Day5.polymerStr |> String.fromInt
+      ]
+    , [ \_ -> Day6.part1 Day6.coordinates |> String.fromInt
       ]
     ]
         |> List.map Array.fromList
