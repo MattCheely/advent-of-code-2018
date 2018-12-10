@@ -11,6 +11,7 @@ import Day4
 import Day5
 import Day6
 import Day7
+import Day8
 import Html exposing (Html, a, button, code, div, h1, h2, nav, p, pre, span, text)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
@@ -42,6 +43,9 @@ solvers =
       ]
     , [ \_ -> Day7.part1 Day7.dependencies
       , \_ -> Day7.part2 Day7.dependencies |> String.fromInt
+      ]
+    , [ \_ -> Day8.part1 Day8.tree |> String.fromInt
+      , \_ -> Day8.part2 Day8.tree |> String.fromInt
       ]
     ]
         |> List.map Array.fromList
