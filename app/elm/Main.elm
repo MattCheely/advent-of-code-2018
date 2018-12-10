@@ -49,6 +49,7 @@ solvers =
       , \_ -> Day8.part2 Day8.tree |> String.fromInt
       ]
     , [ \_ -> Day9.part1 Day9.initialGame |> String.fromInt
+      , \_ -> Day9.part1 Day9.initialGame2 |> String.fromInt
       ]
     ]
         |> List.map Array.fromList

@@ -1,4 +1,4 @@
-module Day9 exposing (initialGame, part1)
+module Day9 exposing (initialGame, initialGame2, part1)
 
 -- Section: Input Parsing
 
@@ -14,6 +14,15 @@ initialGame =
     , marbleState = RingList [] 0 []
     , nextMarble = 1
     , lastMarble = 71250
+    }
+
+
+initialGame2 : Game
+initialGame2 =
+    { players = RingList [] (Player 1 0) initalPlayers
+    , marbleState = RingList [] 0 []
+    , nextMarble = 1
+    , lastMarble = 7125000
     }
 
 
@@ -169,3 +178,12 @@ do times fn input =
         |> List.foldl
             (\_ acc -> fn acc)
             input
+
+
+
+-- Section: Part Two
+
+
+part2 : Game -> Int
+part2 =
+    part1
