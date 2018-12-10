@@ -386,9 +386,13 @@ introView =
             ]
         , p [] [ text """
         If you're here trying to evaluate Elm as a language, I want to
-        note that these sorts of problems don't play to Elm's
-        biggest strenghts, IMHO.  It's not that Elm is worse for handling
-        these problems than other languages. It's fine in that regard.
+        note that these sorts of problems don't highlight the things I
+        like best about Elm (also, how did you even find this?). It's
+        not that Elm isn't a good tool for
+        solving these kinds of problems. It's fine in that regard, and on
+        some problems the pure functional approach lends itself to some
+        really elegant solutions.
+
         However, Elm really shines when
         dealing with things like managing changing application state and
         handling unreliable input, none of which are present here.
