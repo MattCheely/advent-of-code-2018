@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "parcel app/index.html",
-    "build": "rm -r dist && parcel build app/index.html --public-url ./",
+    "build": "rm -r dist && parcel build app/index.html --public-url ./ && parcel build app/day10.html --public-url ./",
     "test": "elm-test",
     "autotest": "elm-test --watch"
   },

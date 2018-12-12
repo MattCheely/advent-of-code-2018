@@ -5,6 +5,7 @@ import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Navigation
 import Data.Day2 as Day2
 import Day1
+import Day11
 import Day2
 import Day3
 import Day4
@@ -14,7 +15,7 @@ import Day7
 import Day8
 import Day9
 import Html exposing (Html, a, button, code, div, h1, h2, nav, p, pre, span, text)
-import Html.Attributes exposing (class, href)
+import Html.Attributes exposing (class, href, target)
 import Html.Events exposing (onClick)
 import Http
 import SyntaxHighlight as Highlight
@@ -50,6 +51,18 @@ solvers =
       ]
     , [ \_ -> Day9.part1 Day9.initialGame |> String.fromInt
       , \_ -> Day9.part1 Day9.initialGame2 |> String.fromInt
+      ]
+    , [ \_ -> "My link is broken. Go to /day10.html"
+      , \_ -> "My link is broken. Go to /day10.html"
+      ]
+    , [ \_ ->
+            Day11.part1 Day11.serialNumber
+                |> (\( x, y ) -> String.fromInt x ++ "," ++ String.fromInt y)
+      , \_ ->
+            Day11.part2 Day11.serialNumber
+                |> (\( x, y, size ) ->
+                        String.fromInt x ++ "," ++ String.fromInt y ++ "," ++ String.fromInt size
+                   )
       ]
     ]
         |> List.map Array.fromList
@@ -390,10 +403,10 @@ introView =
         like best about Elm (also, how did you even find this?). It's
         not that Elm isn't a good tool for
         solving these kinds of problems. It's fine in that regard, and on
-        some problems the pure functional approach lends itself to some
-        really elegant solutions.
+        some problems the pure functional approach lends itself to quite
+        elegant solutions.
 
-        However, Elm really shines when
+        Elm really shines when
         dealing with things like managing changing application state and
         handling unreliable input, none of which are present here.
         """ ]
@@ -436,12 +449,16 @@ partHeader dayPart dayNum day =
 
 solutionView : DayPart -> Int -> Maybe String -> Html Msg
 solutionView dayPart dayNum solution =
-    case solution of
-        Just string ->
-            span [] [ text string ]
+    if dayNum == 10 then
+        a [ class "button", href "day10.html", target "day10" ] [ text "Run" ]
 
-        Nothing ->
-            button [ onClick (RunProblem dayNum dayPart) ] [ text "Run" ]
+    else
+        case solution of
+            Just string ->
+                span [] [ text string ]
+
+            Nothing ->
+                button [ onClick (RunProblem dayNum dayPart) ] [ text "Run" ]
 
 
 codeView : String -> Html Msg

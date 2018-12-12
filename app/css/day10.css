@@ -1,0 +1,17 @@
+body {
+  background-color: black;
+  font-family: "Inconsolata", monospace;
+}
+
+.light {
+  background-color: white;
+  height: 1px;
+  width: 1px;
+  position: absolute;
+}
+
+.time {
+  color: #333;
+  position: absolute;
+  top: 90vh;
+}
