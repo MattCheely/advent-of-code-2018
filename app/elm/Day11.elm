@@ -15,15 +15,6 @@ serialNumber =
 
 
 -- Section: Part One
---
---
-{-
-   (((x + 10) * y) + S)(x + 10)
-   (xy + 10y + S)(x + 10)
-   (x^2y + 10xy + Sx + 10xy + 100y + 10*S)
-   (x^2y + 20xy + Sx + 100y + 10*S )
-   y(x^2 + 20x + Sx + 100) + 10*S
--}
 
 
 part1 : Int -> ( Int, Int )
@@ -62,7 +53,6 @@ get3byPower grid subGridX subGridY =
     foldxy
         (\x y power ->
             get2d x y grid
-                |> Maybe.withDefault 0
                 |> (+) power
         )
         0
@@ -71,9 +61,11 @@ get3byPower grid subGridX subGridY =
         )
 
 
+get2d : Int -> Int -> Array (Array Int) -> Int
 get2d x y grid =
     Array.get (x - 1) grid
         |> Maybe.andThen (Array.get (y - 1))
+        |> Maybe.withDefault 0
 
 
 foldxy :
@@ -124,159 +116,98 @@ getHundreds num =
 -- Section: Part Two
 
 
-part2 : Int -> ( Int, Int, Int )
 part2 sn =
     let
-        initialCalculations =
-            Array.initialize 300
+        gridSize =
+            300
+
+        powerLevels =
+            Array.initialize gridSize
                 (\x ->
-                    Array.initialize 300
+                    Array.initialize gridSize
                         (\y ->
-                            Dict.singleton 1 (getPowerLevel sn (x + 1) (y + 1))
+                            getPowerLevel sn (x + 1) (y + 1)
                         )
                 )
+
+        sums =
+            foldxy gradientAtPos
+                ( 0, powerLevels )
+                ( ( 1, gridSize ), ( 1, gridSize ) )
+                |> Tuple.second
     in
-    List.foldl
-        calculatePowerForSize
-        ( initialCalculations, ( 0, ( 0, 0, 0 ) ) )
-        (List.range 2 3)
-        |> Tuple.second
-        |> Tuple.second
+    findMaxPower sums
 
 
-calculatePowerForSize :
-    Int
-    -> ( Array (Array (Dict Int Int)), ( Int, ( Int, Int, Int ) ) )
-    -> ( Array (Array (Dict Int Int)), ( Int, ( Int, Int, Int ) ) )
-calculatePowerForSize size ( powers, prevMax ) =
+findMaxPower : Array (Array Int) -> ( Int, Int, Int )
+findMaxPower sums =
     let
-        ( sourceSize, sourceFactor ) =
-            getSourceGridInfo size (size - 1)
+        sizes =
+            List.range 2 300
     in
-    if False then
-        powersFromFactor size sourceSize sourceFactor ( powers, prevMax )
-
-    else
-        powersFromPrevious size ( powers, prevMax )
-
-
-getSourceGridInfo : Int -> Int -> ( Int, Int )
-getSourceGridInfo size candidateSource =
-    if candidateSource == 0 then
-        ( 1, size )
-
-    else if modBy size candidateSource == 0 then
-        ( candidateSource, size // candidateSource )
-
-    else
-        getSourceGridInfo size (candidateSource - 1)
-
-
-powersFromPrevious size ( powers, prevMax ) =
     foldxy
-        (\x y ( powerData, maxPower ) ->
+        (\x y highestPower ->
             let
-                powerHere =
-                    powerFromPrevious x y size powerData
+                biggestSize =
+                    301 - max x y
             in
-            ( addPower x y size powerHere powerData
-            , if powerHere > Tuple.first maxPower then
-                ( powerHere, ( x, y, size ) )
+            List.foldl
+                (\size max ->
+                    let
+                        power =
+                            squarePower sums x y size
+                    in
+                    if power > Tuple.first max then
+                        ( power, ( x, y, size ) )
 
-              else
-                maxPower
-            )
+                    else
+                        max
+                )
+                highestPower
+                (List.range 2 biggestSize)
         )
-        ( powers, prevMax )
-        ( ( 1, 301 - size ), ( 1, 301 - size ) )
+        ( 0, ( 0, 0, 0 ) )
+        ( ( 1, 300 ), ( 1, 300 ) )
+        |> Tuple.second
 
 
-powerFromPrevious x y size powerData =
+squarePower : Array (Array Int) -> Int -> Int -> Int -> Int
+squarePower gradient x y size =
     let
         xMax =
             x + size - 1
 
         yMax =
             y + size - 1
-
-        rightCoords =
-            List.range y yMax
-                |> List.map (Tuple.pair xMax)
-
-        bottomCoords =
-            List.range x (xMax - 1)
-                |> List.map (\x1 -> ( x1, yMax ))
     in
-    getPower x y (size - 1) powerData
-        + List.foldl
-            (\( x1, y1 ) power ->
-                getPower x1 y1 1 powerData + power
-            )
-            0
-            rightCoords
-        + List.foldl
-            (\( x1, y1 ) power ->
-                getPower x1 y1 1 powerData + power
-            )
-            0
-            bottomCoords
+    get2d xMax yMax gradient
+        - get2d (x - 1) yMax gradient
+        - get2d xMax (y - 1) gradient
+        + get2d (x - 1) (y - 1) gradient
 
 
-powersFromFactor :
-    Int
-    -> Int
-    -> Int
-    -> ( Array (Array (Dict Int Int)), ( Int, ( Int, Int, Int ) ) )
-    -> ( Array (Array (Dict Int Int)), ( Int, ( Int, Int, Int ) ) )
-powersFromFactor size sourceSize factor ( powers, prevMax ) =
-    foldxy
-        (\x y ( powerData, maxPower ) ->
-            let
-                powerHere =
-                    powerFromFactor x y size sourceSize factor powerData
-            in
-            ( addPower x y size powerHere powerData
-            , if powerHere > Tuple.first maxPower then
-                ( powerHere, ( x, y, size ) )
+gradientAtPos : Int -> Int -> ( Int, Array (Array Int) ) -> ( Int, Array (Array Int) )
+gradientAtPos x y ( columnTotal, gradient ) =
+    let
+        gridSize =
+            Array.length gradient
 
-              else
-                maxPower
-            )
-        )
-        ( powers, prevMax )
-        ( ( 1, 301 - size ), ( 1, 301 - size ) )
+        newColTotal =
+            columnTotal
+                + get2d x y gradient
 
+        upLeftTotal =
+            newColTotal
+                + get2d (x - 1) y gradient
 
-powerFromFactor x y size sourceSize factor powerData =
-    foldxy
-        (\offsetX offsetY power ->
-            let
-                targetX =
-                    x
-                        + (sourceSize * offsetX)
+        nextColumnTotal =
+            if y == gridSize then
+                0
 
-                targetY =
-                    y + (sourceSize * offsetY)
-            in
-            power + getPower targetX targetY sourceSize powerData
-        )
-        0
-        ( ( 0, factor - 1 ), ( 0, factor - 1 ) )
-
-
-getPower : Int -> Int -> Int -> Array (Array (Dict Int Int)) -> Int
-getPower x y size powerData =
-    get2d x y powerData
-        |> Maybe.andThen (Dict.get size)
-        |> Maybe.withDefault 0
-
-
-addPower : Int -> Int -> Int -> Int -> Array (Array (Dict Int Int)) -> Array (Array (Dict Int Int))
-addPower x y size power powerGrid =
-    get2d x y powerGrid
-        |> Maybe.withDefault Dict.empty
-        |> Dict.insert size power
-        |> (\data -> set2d x y data powerGrid)
+            else
+                newColTotal
+    in
+    ( nextColumnTotal, set2d x y upLeftTotal gradient )
 
 
 set2d : Int -> Int -> a -> Array (Array a) -> Array (Array a)
