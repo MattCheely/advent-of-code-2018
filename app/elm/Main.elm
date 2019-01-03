@@ -393,23 +393,11 @@ introView =
             [ text "These are my solutions for the "
             , a [ href "https://adventofcode.com/2018" ] [ text "2018 Advent of Code" ]
             , text """
-        in Elm. I've had fun working on them. They've been good exercise
-        for some of the things I do less often in Elm, like writing
-        recursive funtions and parsers. """
+        in Elm. I had fun working on them and sharing solutions with co-workers.
+        They've been good practice for the things I do less often in Elm, like writing
+        recursive funtions and parsers. I wasn't able finish all of
+        them, due to a busy holiday season, but I still had fun!"""
             ]
-        , p [] [ text """
-        If you're here trying to evaluate Elm as a language, I want to
-        note that these sorts of problems don't highlight the things I
-        like best about Elm (also, how did you even find this?). It's
-        not that Elm isn't a good tool for
-        solving these kinds of problems. It's fine in that regard, and on
-        some problems the pure functional approach lends itself to quite
-        elegant solutions.
-
-        Elm really shines when
-        dealing with things like managing changing application state and
-        handling unreliable input, none of which are present here.
-        """ ]
         ]
 
 
